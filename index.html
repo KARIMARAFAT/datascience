@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>بنك أسئلة CS314 — Data Science</title>
+<style>
+:root{--bg1:#0f172a;--bg2:#1e1b4b;--card:rgba(255,255,255,.07);--line:rgba(255,255,255,.14);--txt:#f1f5f9;--mut:#94a3b8;--acc:#818cf8;--acc2:#38bdf8;--ok:#22c55e;--bad:#ef4444}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:Tahoma,"Segoe UI",Arial,sans-serif;color:var(--txt);background:linear-gradient(135deg,var(--bg1),var(--bg2));min-height:100vh;overflow-x:hidden;display:flex;align-items:center;justify-content:center;padding:20px}
+.blob{position:fixed;border-radius:50%;filter:blur(70px);opacity:.35;z-index:0;animation:float 16s ease-in-out infinite}
+.b1{width:340px;height:340px;background:#6366f1;top:-80px;right:-60px}
+.b2{width:280px;height:280px;background:#0ea5e9;bottom:-70px;left:-50px;animation-delay:-6s}
+.b3{width:200px;height:200px;background:#a855f7;top:40%;left:40%;animation-delay:-11s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-25px) scale(1.08)}}
+.app{position:relative;z-index:1;width:100%;max-width:660px}
+.glass{background:var(--card);border:1px solid var(--line);border-radius:24px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.hide{display:none !important}
+.head{text-align:center;padding:26px 24px 6px;animation:fadeDown .7s ease both}
+.head h1{margin:0;font-size:22px}
+.head p{margin:6px 0 0;color:var(--mut);font-size:14px}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+#start{padding:24px;text-align:center;animation:fadeUp .8s ease both}
+.icon-big{font-size:64px;display:inline-block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
+.modes{display:grid;gap:12px;margin:22px 0 10px}
+.mode{padding:16px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--txt);cursor:pointer;font-size:16px;text-align:right;transition:.25s}
+.mode small{display:block;color:var(--mut);font-size:13px;margin-top:4px}
+.mode:hover{transform:translateY(-3px);border-color:var(--acc);box-shadow:0 10px 25px rgba(129,140,248,.25)}
+.mode:active{transform:scale(.98)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 26px;border:0;border-radius:14px;cursor:pointer;font-size:16px;font-weight:700;color:#fff;background:linear-gradient(90deg,var(--acc),var(--acc2));box-shadow:0 10px 25px rgba(56,189,248,.3);transition:transform .2s,box-shadow .2s;font-family:inherit}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;border:1px solid var(--line);box-shadow:none}
+#quiz{padding:22px 24px 26px}
+.topbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mut);margin-bottom:10px;gap:8px;flex-wrap:wrap}
+.pill{padding:4px 12px;border-radius:999px;background:rgba(129,140,248,.18);color:#c7d2fe;font-weight:700}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:18px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:99px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.scorebox{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);margin-bottom:14px}
+.scorebox b{color:var(--txt)}
+.qcard{animation:slideIn .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes slideIn{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+.qcard.out{animation:slideOut .3s ease forwards}
+@keyframes slideOut{to{opacity:0;transform:translateX(40px)}}
+.qcard.shake{animation:shake .5s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.tag{display:inline-block;font-size:12px;padding:3px 10px;border-radius:8px;background:rgba(56,189,248,.15);color:#7dd3fc;margin-left:6px}
+.ctx{font-size:13px;color:#cbd5e1;background:rgba(255,255,255,.05);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;margin:10px 0;direction:ltr;text-align:left;line-height:1.7;white-space:pre-wrap}
+.qtext{font-size:17px;line-height:1.75;margin:12px 0 18px;direction:ltr;text-align:left}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;direction:ltr;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--txt);font-size:15px;cursor:pointer;transition:.2s;animation:popIn .4s ease both;font-family:inherit}
+.opt:nth-child(2){animation-delay:.05s}.opt:nth-child(3){animation-delay:.1s}.opt:nth-child(4){animation-delay:.15s}
+@keyframes popIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+.opt:hover:not(:disabled){border-color:var(--acc);transform:translateX(-4px);background:rgba(129,140,248,.1)}
+.opt .k{flex:0 0 30px;height:30px;border-radius:9px;display:grid;place-items:center;background:rgba(255,255,255,.1);font-weight:700;font-size:13px}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:rgba(34,197,94,.16);animation:pulseOk .6s}
+.opt.wrong{border-color:var(--bad);background:rgba(239,68,68,.16)}
+.opt.right .k{background:var(--ok)}.opt.wrong .k{background:var(--bad)}
+@keyframes pulseOk{0%{transform:scale(1)}50%{transform:scale(1.03)}100%{transform:scale(1)}}
+.feed{margin-top:16px;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.7;animation:fadeUp .4s ease both}
+.feed.ok{background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.4)}
+.feed.bad{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4)}
+.feed h3{margin:0 0 6px;font-size:15px}
+.feed p{margin:0;color:#e2e8f0;direction:ltr;text-align:left}
+.next-row{display:flex;justify-content:flex-start;margin-top:16px}
+#results{padding:30px 24px;text-align:center;animation:fadeUp .7s ease both}
+.ring{position:relative;width:180px;height:180px;margin:6px auto 14px}
+.ring svg{transform:rotate(-90deg)}
+.ring .bg{stroke:rgba(255,255,255,.08)}
+.ring .fg{stroke:url(#g);stroke-linecap:round;transition:stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1)}
+.ring .num{position:absolute;inset:0;display:grid;place-items:center;font-size:34px;font-weight:800}
+.ring .num small{display:block;font-size:12px;color:var(--mut);font-weight:400}
+.msg{font-size:18px;margin:6px 0 4px;animation:fadeUp .8s .2s both}
+.sub{color:var(--mut);font-size:14px;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+.stat{padding:14px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--line);animation:popIn .5s both}
+.stat:nth-child(2){animation-delay:.12s}
+.stat b{display:block;font-size:22px;margin-top:4px}
+.actions{display:grid;gap:10px}
+.confetti{position:fixed;top:-20px;width:10px;height:14px;z-index:5;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.9}}
+.footer{position:fixed;bottom:8px;left:0;right:0;text-align:center;font-size:12px;color:rgba(255,255,255,.4);z-index:1}
+kbd{background:rgba(255,255,255,.12);padding:1px 6px;border-radius:5px;font-family:inherit}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<div class="app">
+  <div class="glass">
+    <div class="head">
+      <h1>بنك أسئلة CS314 · Data Science</h1>
+      <p>الفصول 1 – 5 · 100 سؤال اختيار من متعدد · مقسمين حسب الأسابيع</p>
+    </div>
+
+    <div id="start">
+      <div class="icon-big">📊</div>
+      <p style="color:var(--mut);margin:12px 0 0">اختار الأسبوع اللي عايز تذاكره وابدأ. أي سؤال تغلط فيه هتقدر تراجعه في الآخر وتحاول تاني.</p>
+      <div class="modes">
+        <button class="mode" onclick="pick('all')">الكل<small>100 سؤال · الفصول 1 – 5</small></button>
+        <button class="mode" onclick="pick('w1')">الأسبوع 1<small>40 سؤال · الفصل 1 والفصل 2</small></button>
+        <button class="mode" onclick="pick('w2')">الأسابيع 2 – 4<small>20 سؤال · الفصل 3</small></button>
+        <button class="mode" onclick="pick('w5')">الأسبوع 5<small>40 سؤال · الفصل 4 والفصل 5</small></button>
+      </div>
+    </div>
+
+    <div id="quiz" class="hide">
+      <div class="topbar"><span id="counter"></span><span class="pill" id="chap"></span></div>
+      <div class="bar"><i id="prog"></i></div>
+      <div class="scorebox"><span>صح حتى الآن: <b id="liveScore">0</b></span><span>غلط: <b id="liveWrong">0</b></span></div>
+      <div id="qcard" class="qcard">
+        <span class="tag" id="wk"></span>
+        <div id="ctx"></div>
+        <div class="qtext" id="qtext"></div>
+        <div class="opts" id="opts"></div>
+        <div id="feed" class="feed hide"></div>
+        <div class="next-row"><button class="btn hide" id="nextBtn" onclick="next()">السؤال الجاي ←</button></div>
+      </div>
+    </div>
+
+    <div id="results" class="hide">
+      <div class="ring">
+        <svg width="180" height="180" viewBox="0 0 180 180">
+          <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#818cf8"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs>
+          <circle class="bg" cx="90" cy="90" r="78" fill="none" stroke-width="14"/>
+          <circle class="fg" id="ringFg" cx="90" cy="90" r="78" fill="none" stroke-width="14" stroke-dasharray="490" stroke-dashoffset="490"/>
+        </svg>
+        <div class="num"><div><span id="pctNum">0%</span><small id="pctSub"></small></div></div>
+      </div>
+      <div class="msg" id="msg"></div>
+      <div class="sub" id="sub"></div>
+      <div class="stats">
+        <div class="stat">من أول محاولة<b id="firstScore">0</b></div>
+        <div class="stat">بعد المراجعة<b id="finalScore">0</b></div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="retryBtn" onclick="retry()">راجع الأسئلة اللي غلطت فيها</button>
+        <button class="btn ghost" onclick="home()">ابدأ من جديد</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">اختصارات: <kbd>1</kbd>–<kbd>4</kbd> للاختيار · <kbd>Enter</kbd> للسؤال الجاي</div>
+
+<script>
+const LETTERS = ["A","B","C","D"];
+const WK = {1:"الأسبوع 1",2:"الأسبوع 2–4",3:"الأسبوع 2–4",4:"الأسبوع 2–4",5:"الأسبوع 5"};
+const CH = {1:"الفصل 1 · Introduction to Data Science",2:"الفصل 2 · Python Tools for Data Science",3:"الفصل 3 · The Facets of Data",4:"الفصل 4 · The Data Science Process",5:"الفصل 5 · Problem Solving with Python"};
+const WEEKGROUP = {1:'w1',2:'w1',3:'w2',4:'w5',5:'w5'};
+
+/* ===== QUESTIONS ===== */
+const Q = [
+/* ---------- Chapter 1 ---------- */
+{c:1,q:`Which statement best defines data science?`,o:[`The design of relational databases and their query languages`,`An interdisciplinary field that uses scientific methods, processes, algorithms and systems to extract insight from data and support decisions`,`A branch of pure mathematics concerned with probability theory`,`The practice of building websites that display data`],a:1,e:`Definition in Section 1.1.`},
+{c:1,q:`Which three areas overlap to form data science?`,o:[`Computer science, mathematics and statistics, domain knowledge`,`Computer science, marketing, law`,`Statistics, physics, chemistry`,`Programming, graphic design, finance`],a:0,e:`CS gives tools, maths/stats gives methods, domain knowledge gives context.`},
+{c:1,q:`Compared with classical statistics, data science places more emphasis on:`,o:[`Formal mathematical proofs`,`Ignoring uncertainty in results`,`Small, carefully designed surveys only`,`Computation, large or unstructured datasets, and building software products`],a:3,e:`Data science borrows statistics' methods but stresses computation, scale and products.`},
+{c:1,q:`Which statistician argued in 1962 for the practical analysis of real data and later wrote Exploratory Data Analysis (1977)?`,o:[`Ronald Fisher`,`John Tukey`,`Florence Nightingale`,`John Snow`],a:1,e:`Tukey also introduced the box plot.`},
+{c:1,q:`Which 2004 publication led to the open-source Hadoop system and later to Apache Spark?`,o:[`Google's MapReduce paper`,`The Harvard Business Review article on data scientists`,`Tukey's Exploratory Data Analysis`,`The CRISP-DM guide`],a:0,e:`MapReduce ran on clusters of cheap machines; Hadoop and Spark followed.`},
+{c:1,q:`In the "Vs" of big data, which one describes the speed at which data arrives?`,o:[`Volume`,`Variety`,`Velocity`,`Value`],a:2,e:`Velocity = speed of arrival.`},
+{c:1,q:`The V called veracity refers to:`,o:[`How fast data is produced`,`How much storage the data needs`,`How many different data types exist`,`How trustworthy the data is`],a:3,e:`Veracity = trustworthiness; value = usefulness.`},
+{c:1,q:`"Sales fell by 12% last quarter" is an example of which type of analytics?`,o:[`Descriptive`,`Diagnostic`,`Predictive`,`Prescriptive`],a:0,e:`It summarizes what happened.`},
+{c:1,q:`"We expect sales to fall a further 5% next quarter unless we act" is an example of:`,o:[`Descriptive analytics`,`Diagnostic analytics`,`Predictive analytics`,`Prescriptive analytics`],a:2,e:`It forecasts what will happen.`},
+{c:1,q:`Which type of analytics answers "What should we do?" and typically uses optimization and simulation?`,o:[`Descriptive`,`Diagnostic`,`Predictive`,`Prescriptive`],a:3,e:`Prescriptive recommends an action.`},
+{c:1,q:`Which ordering lists the four types of analytics by increasing difficulty and value?`,o:[`Predictive → Descriptive → Prescriptive → Diagnostic`,`Descriptive → Diagnostic → Predictive → Prescriptive`,`Diagnostic → Descriptive → Predictive → Prescriptive`,`Descriptive → Predictive → Diagnostic → Prescriptive`],a:1,e:`Each type builds on the one before it.`},
+{c:1,q:`An analyst drills down by region and finds that sales fell mainly where a competitor opened new stores. This is:`,o:[`Descriptive analytics`,`Diagnostic analytics`,`Predictive analytics`,`Prescriptive analytics`],a:1,e:`Drill-down explains why it happened.`},
+{c:1,q:`Which role builds and maintains pipelines, data warehouses and data lakes?`,o:[`Data analyst`,`Data engineer`,`BI developer`,`Research scientist`],a:1,e:`Data engineers build the infrastructure that moves and stores data.`},
+{c:1,q:`Which role takes models built by data scientists and turns them into reliable, monitored production systems?`,o:[`Machine learning engineer`,`Data analyst`,`Data architect`,`BI developer`],a:0,e:`ML engineers focus on deployment and monitoring.`},
+{c:1,q:`Which role mainly answers business questions from existing data using SQL, reports and dashboards?`,o:[`Research scientist`,`Data engineer`,`Data analyst`,`Machine learning engineer`],a:2,e:`Analysts report on existing data.`},
+{c:1,q:`Which role designs how an organization's data is modeled, stored, secured and governed?`,o:[`Data architect`,`Data analyst`,`Machine learning engineer`,`BI developer`],a:0,e:`Architects design structure and governance, not individual reports.`},
+{c:1,q:`A shop's "customers who bought this also bought…" feature works mainly by:`,o:[`Asking customers to rate every product`,`Choosing products at random`,`Showing the most expensive products first`,`Finding patterns of co-occurrence in millions of purchase records`],a:3,e:`Recommendations rest on co-occurrence in purchase records.`},
+{c:1,q:`An airline predicts engine failures from thousands of sensor readings per second. Which two facets of data does this use?`,o:[`Natural language and graph data`,`Images and audio`,`Machine-generated and streaming data`,`Structured survey data and video`],a:2,e:`Sensor readings are machine-generated and arrive as a stream.`},
+{c:1,q:`Which of these is a soft skill the chapter says data scientists need?`,o:[`Memorizing every library function`,`Working without input from domain experts`,`Avoiding any discussion of uncertainty`,`Translating a vague business problem into a precise, answerable question`],a:3,e:`Framing the question is a core communication skill.`},
+{c:1,q:`A hospital asks two questions: (i) which patients are most likely to be readmitted within 30 days, and (ii) which follow-up call schedule would cut readmissions most within the budget. These are, in order:`,o:[`Descriptive, then diagnostic`,`Diagnostic, then predictive`,`Predictive, then prescriptive`,`Prescriptive, then predictive`],a:2,e:`(i) forecasts a risk; (ii) chooses an action under a constraint.`},
+
+/* ---------- Chapter 2 ---------- */
+{c:2,ctx:`Unless stated otherwise, a = np.array([3, 1, 4, 1, 5, 9, 2, 6]), m = np.array([[1, 2, 3], [4, 5, 6]]), and df is the seaborn penguins dataset.`,q:`In a Jupyter notebook, what is the kernel?`,o:[`The file that stores the notebook on disk`,`A markdown cell that explains the code`,`The toolbar at the top of the notebook`,`The Python process that runs your code and remembers variables between cells`],a:3,e:`The kernel keeps variables in memory between cells.`},
+{c:2,q:`What should you do before submitting a notebook?`,o:[`Delete all markdown cells`,`Save it as a .py file`,`Run only the last cell`,`Restart the kernel and run all cells from the top`],a:3,e:`Restart and Run All proves the notebook runs top to bottom.`},
+{c:2,q:`What does a[2:5] return?`,o:[`[1 4 1]`,`[4 1 5]`,`[4 1 5 9]`,`[1 4 1 5]`],a:1,e:`Positions 2, 3, 4; the end index 5 is excluded.`},
+{c:2,q:`What does a[a > 3] return?`,o:[`[True False True ...]`,`[3 4 5 9 6]`,`[4 5 9 6]`,`[9]`],a:2,e:`The mask keeps only values greater than 3.`},
+{c:2,q:`What does m.sum(axis=0) return?`,o:[`[6 15]`,`[5 7 9]`,`21`,`[1 4]`],a:1,e:`axis=0 collapses rows: one sum per column (1+4, 2+5, 3+6).`},
+{c:2,q:`What is m.shape?`,o:[`(3, 2)`,`(6,)`,`(2, 3)`,`2`],a:2,e:`2 rows, 3 columns.`},
+{c:2,q:`What does np.arange(0, 10, 2) return?`,o:[`[0 2 4 6 8]`,`[0 2 4 6 8 10]`,`[2 4 6 8 10]`,`[0. 2.5 5. 7.5 10.]`],a:0,e:`The stop value 10 is excluded.`},
+{c:2,q:`An array of shape (2, 3) is multiplied element-wise by another array. Which shape can be broadcast against it?`,o:[`(2,)`,`(3,)`,`(3, 2)`,`(4,)`],a:1,e:`From the right, 3 matches 3 and the missing dimension is stretched.`},
+{c:2,q:`Why is temps_c * 9 / 5 + 32 on a NumPy array faster than a Python for loop?`,o:[`It skips some elements`,`It uses less precise numbers`,`It rounds the result`,`It runs the whole operation in compiled code without a Python-level loop`],a:3,e:`Vectorized code avoids the Python loop; about 50× faster at 10 million values.`},
+{c:2,q:`Which pandas object is a one-dimensional array with labels?`,o:[`DataFrame`,`ndarray`,`Series`,`Index`],a:2,e:`A Series is one labeled column.`},
+{c:2,q:`How many rows do df.loc[0:2] and df.iloc[0:2] return?`,o:[`3 and 2`,`2 and 3`,`2 and 2`,`3 and 3`],a:0,e:`loc includes the end label; iloc excludes the end position.`},
+{c:2,q:`Which line correctly selects male penguins heavier than 5500 g?`,o:[`df[df["body_mass_g"] > 5500 and df["sex"] == "Male"]`,`df[(df["body_mass_g"] > 5500) & (df["sex"] == "Male")]`,`df[df["body_mass_g"] > 5500 & df["sex"] == "Male"]`,`df.where("body_mass_g > 5500 and sex = Male")`],a:1,e:`Use & with parentheses; and fails on whole columns.`},
+{c:2,q:`Which command shows each column's data type and number of non-null values?`,o:[`df.head()`,`df.describe()`,`df.info()`,`df.shape`],a:2,e:`info() lists dtypes and non-null counts.`},
+{c:2,q:`groupby follows which pattern?`,o:[`Map–reduce–sort`,`Filter–join–rank`,`Extract–transform–load`,`Split–apply–combine`],a:3,e:`Split by group, apply a function, combine the results.`},
+{c:2,q:`What does df.groupby("species")["body_mass_kg"].mean() return?`,o:[`One overall mean`,`The rows sorted by species`,`One mean per row`,`One mean per species`],a:3,e:`A Series indexed by species.`},
+{c:2,q:`What does [g for g in [72, 85, 90, 64, 78] if g >= 70] produce?`,o:[`[72, 85, 90, 78]`,`[64]`,`[True, True, True, False, True]`,`[72, 85, 90, 64, 78]`],a:0,e:`64 fails the condition.`},
+{c:2,q:`With the chapter's letter_grade function (90+ A, 80+ B, 70+ C, 60+ D, else F), what is letter_grade(85)?`,o:[`"A"`,`"B"`,`"C"`,`"F"`],a:1,e:`85 is at least 80 but below 90.`},
+{c:2,q:`Which Git command records staged changes with a message?`,o:[`git add`,`git push`,`git commit -m "..."`,`git clone`],a:2,e:`add stages; commit records.`},
+{c:2,q:`What does git pull do?`,o:[`Downloads your teammates' changes`,`Uploads your commits to GitHub`,`Deletes the local repository`,`Stages a file`],a:0,e:`push uploads; pull downloads.`},
+{c:2,q:`Your notebook runs for you, but a TA who runs it from the top gets NameError: name 'clean_df' is not defined. What is the most likely cause?`,o:[`The TA has a different version of Python`,`You defined clean_df in a cell you later deleted, and your kernel still remembered it`,`pandas was not installed on your machine`,`The notebook file is too large`],a:1,e:`Hidden kernel state; the fix is Restart and Run All before sharing.`},
+
+/* ---------- Chapter 3 ---------- */
+{c:3,q:`What defines structured data?`,o:[`It follows a fixed schema of named, typed fields that fits rows and columns`,`It is always numeric`,`It is stored only in JSON files`,`It has no organization at all`],a:0,e:`A schema fixes field names and types.`},
+{c:3,q:`JSON and XML are typical formats for which kind of data?`,o:[`Structured`,`Streaming`,`Unstructured`,`Semi-structured`],a:3,e:`Tags or keys, but no fixed schema; records may differ.`},
+{c:3,q:`A collection of customer reviews written in free text is best described as:`,o:[`Structured data`,`Graph data`,`Natural language, a kind of unstructured data`,`Machine-generated data`],a:2,e:`Human-written text is natural language.`},
+{c:3,q:`In what order does the chapter's basic text pipeline run?`,o:[`Tokenization → counting → normalization → stop-word removal`,`Normalization → tokenization → stop-word removal → counting`,`Stop-word removal → normalization → counting → tokenization`,`Counting → tokenization → normalization → stop-word removal`],a:1,e:`Clean the text, split it, drop common words, then count.`},
+{c:3,q:`What does stop-word removal remove?`,o:[`Punctuation marks`,`Very common words such as "the" and "and"`,`Words that appear only once`,`Numbers`],a:1,e:`They carry little meaning.`},
+{c:3,q:`A web server log line ends with status code 404. What does this mean?`,o:[`Success`,`A server error`,`A client error, such as a missing page`,`A redirect`],a:2,e:`4xx = client error; 5xx = server error; 200 = success.`},
+{c:3,q:`Five log lines have status codes 200, 200, 401, 404 and 500. What does (logs["status"] >= 400).mean() print?`,o:[`0.4`,`0.6`,`3`,`0.2`],a:1,e:`401, 404 and 500 are ≥ 400: 3 of 5 = 0.6.`},
+{c:3,q:`Which tool does the chapter use to pull the IP, time, method, path, status and bytes out of each log line?`,o:[`A regular expression`,`A pivot table`,`A graph database`,`Broadcasting`],a:0,e:`The chapter's pattern captures six fields per line.`},
+{c:3,q:`In graph data, what do edges represent?`,o:[`Relationships between pairs of nodes`,`Entities`,`Columns of a table`,`Time stamps`],a:0,e:`Nodes are entities; edges are relationships.`},
+{c:3,q:`In a network, a node's degree is:`,o:[`The number of connections it has`,`Its distance from the centre of the graph`,`Its position in a sorted list`,`The weight of its heaviest edge`],a:0,e:`Degree counts connections.`},
+{c:3,q:`Betweenness centrality measures:`,o:[`How many edges a node has`,`The fraction of possible edges that exist`,`How far a node is from every other node`,`How often a node lies on the shortest paths between other nodes`],a:3,e:`High betweenness marks a bridge node.`},
+{c:3,q:`An undirected network has 34 nodes and 78 edges. What is its density (rounded)?`,o:[`0.069`,`0.139`,`0.436`,`2.29`],a:1,e:`78 ÷ (34 × 33 ÷ 2) = 78 ÷ 561 ≈ 0.139.`},
+{c:3,q:`Which kind of system makes it efficient to follow chains of relationships, such as "friends of friends"?`,o:[`A spreadsheet`,`A data warehouse of flat tables`,`A CSV file`,`A graph database such as Neo4j`],a:3,e:`Graph databases store relationships directly.`},
+{c:3,q:`A colour image loads with shape (427, 640, 3) and dtype uint8. What does the 3 represent?`,o:[`Three frames`,`Three brightness levels`,`Three bytes per row`,`The red, green and blue channels`],a:3,e:`Each pixel has an R, G and B value from 0 to 255.`},
+{c:3,q:`How many numbers does that (427, 640, 3) image contain?`,o:[`1,067`,`273,280`,`819,840`,`2,048,000`],a:2,e:`427 × 640 × 3 = 819,840.`},
+{c:3,q:`Which line turns that image into a grayscale image of shape (427, 640)?`,o:[`img.mean(axis=0)`,`img.mean(axis=1)`,`img.mean(axis=2)`,`img.mean()`],a:2,e:`Averaging over axis 2 merges the three channels.`},
+{c:3,q:`CD-quality audio is stored as:`,o:[`A 2-D array of pixels`,`A graph of frequencies`,`A list of words`,`A 1-D array of about 44,100 amplitude values per second`],a:3,e:`Audio is a 1-D sequence of pressure samples.`},
+{c:3,q:`Why is video the most demanding facet for storage and computation?`,o:[`It is a sequence of 24–60 high-resolution frames per second, usually with audio`,`It is always stored as text`,`It cannot be represented as arrays`,`It has no fixed format`],a:0,e:`One HD minute is 3,600+ frames of about 2 million pixels.`},
+{c:3,q:`Why does stream processing compute summaries over windows?`,o:[`Windows make the data structured`,`A stream never ends, so there is no "all the data" to average`,`Windows remove all noise`,`Streams cannot be stored in memory at all`],a:1,e:`Windows summarize the latest k events or t seconds.`},
+{c:3,q:`In the chapter's sensor example, the code keeps a window list and pops the oldest value when its length exceeds 20. How many readings does it hold at most, however long the stream runs?`,o:[`1`,`20`,`21`,`1,000`],a:1,e:`Memory stays fixed at 20 readings.`},
+
+/* ---------- Chapter 4 ---------- */
+{c:4,q:`What is the first step of the six-step data science process?`,o:[`Retrieving data`,`Data modeling`,`Data exploration`,`Setting the research goal`],a:3,e:`Every project starts with a question.`},
+{c:4,q:`Which sequence lists the six steps in order?`,o:[`Goal → Retrieve → Prepare → Explore → Model → Present`,`Retrieve → Goal → Explore → Prepare → Model → Present`,`Goal → Prepare → Retrieve → Model → Explore → Present`,`Goal → Retrieve → Explore → Model → Prepare → Present`],a:0,e:`The order follows the Cielen, Meysman and Ali model used in the book.`},
+{c:4,q:`A good research goal answers which three questions?`,o:[`Who, where and when`,`How much, how many and how long`,`What, why and how`,`Which tool, which model and which language`],a:2,e:`What to know, why it matters, how to approach and measure it.`},
+{c:4,q:`Which is the best-written research goal?`,o:[`"Analyze our tips data."`,`"Use AI to improve the restaurant."`,`"Determine whether tip percentage differs by day, meal time and party size, so the manager can decide whether to rotate staff."`,`"Build the most accurate model possible."`],a:2,e:`It names the variables and the decision it supports.`},
+{c:4,q:`A project charter records an agreement between the data team and:`,o:[`The software vendor`,`The competitors`,`The database administrator only`,`The stakeholders who will use the results`],a:3,e:`Stakeholders are the people who use the results.`},
+{c:4,q:`Which item does NOT belong in a project charter?`,o:[`Deliverables and a measure of success`,`The resources expected`,`A timeline`,`The final model's predictions`],a:3,e:`Predictions are an output of the project, not part of its charter.`},
+{c:4,q:`Open-data portals, government statistics and web APIs are examples of:`,o:[`External sources`,`Internal sources`,`New data collection`,`Data warehouses`],a:0,e:`They come from outside the organization.`},
+{c:4,q:`What are the three parts of data preparation?`,o:[`Cleaning, integration, transformation`,`Selecting, fitting, validating`,`Collecting, storing, deleting`,`Exploring, modeling, presenting`],a:0,e:`The three parts named in Step 3.`},
+{c:4,q:`Joining the till records with the staff schedules is an example of:`,o:[`Cleaning`,`Integration`,`Transformation`,`Validation`],a:1,e:`Integration combines several sources.`},
+{c:4,q:`Creating tips["tip_pct"] = tips["tip"] / tips["total_bill"] * 100 is an example of:`,o:[`Cleaning`,`Integration`,`Transformation`,`Automation`],a:2,e:`A new variable built from existing ones.`},
+{c:4,q:`The tips data covers one restaurant, Thursday to Sunday only. What should the team do about Mondays?`,o:[`Assume Monday looks like Thursday`,`Delete the Thursday rows`,`Document it as a limitation; any Monday conclusion would be a guess`,`Fill in Monday values with the overall mean`],a:2,e:`Data that answers a slightly different question is not good enough.`},
+{c:4,q:`What is the aim of exploratory data analysis (EDA)?`,o:[`To produce the final report`,`To write the project charter`,`To deploy the model`,`To understand the data's distributions, relationships and surprises`],a:3,e:`Tukey compared EDA to detective work.`},
+{c:4,q:`What are the three activities of data modeling?`,o:[`Cleaning, integration, transformation`,`Selecting, fitting, validating`,`Collecting, exploring, presenting`,`Sampling, plotting, reporting`],a:1,e:`The three activities named in Step 5.`},
+{c:4,q:`What does validating a model mean?`,o:[`Checking that its conclusions hold beyond the sample used to build it`,`Making the code run faster`,`Choosing the model type`,`Presenting it to managers`],a:0,e:`Validation checks the model generalizes.`},
+{c:4,q:`A fitted line gives tip = 0.92 + 0.105 × bill. What tip does it predict for a $30 bill?`,o:[`$3.15`,`$4.07`,`$3.07`,`$27.60`],a:1,e:`0.92 + 0.105 × 30 = 0.92 + 3.15 = 4.07.`},
+{c:4,q:`What should a presentation to managers contain?`,o:[`All the code and every intermediate table`,`The answer, the recommended action and the level of confidence, in plain language with one or two charts`,`Only the correlation coefficient`,`The raw data file`],a:1,e:`Managers need the decision, not the code.`},
+{c:4,q:`In Step 6, automation means:`,o:[`Letting a model make every decision`,`Skipping data preparation`,`Removing all charts from the report`,`Packaging the analysis so it can rerun on new data with little manual effort`],a:3,e:`e.g. a monthly script that reloads, cleans and reports.`},
+{c:4,q:`During exploration you find impossible values in a column. Which step do you return to?`,o:[`Step 1: set the goal`,`Step 2: retrieve data`,`Step 3: data preparation`,`Step 6: presentation`],a:2,e:`Impossible values are a cleaning problem.`},
+{c:4,q:`During retrieval you find the data you need does not exist and cannot be obtained. Which step do you return to?`,o:[`Step 1: revise the research goal`,`Step 3: data preparation`,`Step 5: modeling`,`None; stop the project immediately`],a:0,e:`If the data cannot exist, the goal must change.`},
+{c:4,q:`In CRISP-DM, which phase covers the work of Step 4, data exploration?`,o:[`Business understanding`,`Data understanding`,`Evaluation`,`Deployment`],a:1,e:`CRISP-DM's data understanding phase covers both collection (Step 2) and exploration (Step 4).`},
+
+/* ---------- Chapter 5 ---------- */
+{c:5,q:`What are the four parts of computational thinking?`,o:[`Decomposition, pattern recognition, abstraction, algorithm design`,`Input, processing, output, storage`,`Variables, loops, functions, classes`,`Cleaning, exploring, modeling, presenting`],a:0,e:`The four habits named in Section 5.1.`},
+{c:5,q:`When finding consistently late drivers, you keep the driver's name and the delivery times but ignore customer addresses. Which part of computational thinking is this?`,o:[`Decomposition`,`Pattern recognition`,`Abstraction`,`Algorithm design`],a:2,e:`Abstraction ignores irrelevant details.`},
+{c:5,q:`Breaking a large problem into smaller problems that can be solved one at a time is called:`,o:[`Abstraction`,`Simulation`,`Vectorization`,`Decomposition`],a:3,e:`Decomposition splits the problem.`},
+{c:5,q:`Inside a loop, what does continue do?`,o:[`Skips to the next iteration`,`Ends the loop entirely`,`Restarts the loop from the first item`,`Pauses the program`],a:0,e:`continue skips the rest of this iteration.`},
+{c:5,q:`Inside a loop, what does break do?`,o:[`Skips one iteration`,`Restarts the kernel`,`Raises an error`,`Leaves the loop entirely`],a:3,e:`break exits the loop.`},
+{c:5,q:`The cleaning loop runs over readings = [21.5, 22.0, None, 23.1, -999, 22.8, 85.0, 22.4], skipping None, -999 and anything above 60. How many values end up in clean?`,o:[`4`,`5`,`6`,`8`],a:1,e:`21.5, 22.0, 23.1, 22.8 and 22.4 remain; mean 22.36.`},
+{c:5,q:`Why does the loop test r is None before testing r > 60?`,o:[`It is faster`,`Comparing None > 60 raises an error in Python`,`None is greater than every number`,`The order does not matter`],a:1,e:`Check for None first to avoid a TypeError.`},
+{c:5,q:`balance starts at 10,000 and the loop while balance < 20000: balance *= 1.07; years += 1 runs. What is years at the end?`,o:[`7`,`10`,`11`,`14`],a:2,e:`1.07^10 ≈ 1.97 is still below 2; 1.07^11 ≈ 2.10.`},
+{c:5,q:`Using the chapter's longest_dry_spell function, what does longest_dry_spell([0, 1, 0, 0, 0, 2, 0, 0]) return?`,o:[`2`,`6`,`5`,`3`],a:3,e:`Dry runs have lengths 1, 3 and 2; the longest is 3.`},
+{c:5,q:`Given def summarize(values, digits=2):, what happens when you call summarize(clean)?`,o:[`An error, because digits is missing`,`digits takes its default value, 2`,`digits is set to 0`,`digits is set to None`],a:1,e:`Parameters with defaults can be omitted.`},
+{c:5,q:`Variables created inside a function, such as n and mean in summarize, are:`,o:[`Local: they exist only while the function runs`,`Global and visible everywhere`,`Saved to disk`,`Shared with every other function`],a:0,e:`This scope rule prevents name clashes.`},
+{c:5,q:`With the chapter's to_float function (a try/except ValueError that returns None), what is to_float("7,5")?`,o:[`7.5`,`75.0`,`None`,`It crashes with a ValueError`],a:2,e:`float("7,5") raises ValueError, which is caught.`},
+{c:5,q:`Why should you avoid a bare except:?`,o:[`It is slower than except ValueError:`,`It only works in notebooks`,`It is not valid Python`,`It catches every error, hiding real bugs such as a misspelled variable`],a:3,e:`Catch only the errors you expect.`},
+{c:5,q:`In pandas, which approach is fastest for arithmetic on whole columns?`,o:[`An explicit for loop over rows`,`apply with a Python function`,`A vectorized expression`,`Converting the columns to lists first`],a:2,e:`Vectorized code runs in compiled code.`},
+{c:5,q:`When is an explicit for loop the right choice in pandas?`,o:[`When each step depends on the previous one (state)`,`For simple arithmetic between two columns`,`Whenever the data has more than 1,000 rows`,`Never`],a:0,e:`State from earlier rows needs a loop.`},
+{c:5,q:`The course total is 0.4 × midterm + 0.6 × final, and grades are A ≥ 85, B ≥ 75, C ≥ 65, D ≥ 50, otherwise F. A student scores 70 on the midterm and 90 on the final. What grade does letter return?`,o:[`A`,`B`,`C`,`D`],a:1,e:`0.4 × 70 + 0.6 × 90 = 28 + 54 = 82, which is ≥ 75 and < 85.`},
+{c:5,q:`The Monte Carlo method answers a question by:`,o:[`Generating many random scenarios and counting how often an event happens`,`Solving an exact formula`,`Asking an expert`,`Sorting the data`],a:0,e:`Simulation instead of a formula.`},
+{c:5,q:`In a class of 23 people, the probability that at least two share a birthday is about:`,o:[`0.06`,`0.23`,`0.5`,`0.9`],a:2,e:`Simulated 0.508; exact 0.507.`},
+{c:5,q:`df["Age"] raises KeyError: 'Age'. What is the most likely cause?`,o:[`The column holds text instead of numbers`,`The column name is spelled, capitalized or spaced differently; check df.columns`,`The file path is wrong`,`A cell was not run`],a:1,e:`KeyError means the label was not found.`},
+{c:5,q:`What happens when every assert statement in a cell passes?`,o:[`Each prints "True"`,`A warning is shown`,`The kernel restarts`,`Nothing is printed and the program continues`],a:3,e:`Silent success; a failed assert stops with AssertionError.`}
+];
+
+/* ===== ENGINE ===== */
+const $ = id => document.getElementById(id);
+let pending = [], queue = [], pos = 0, roundNo = 1, answered = false;
+let totalQ = 0, firstCorrect = 0, liveRight = 0, liveWrong = 0, modeName = 'all';
+
+function show(id){ ["start","quiz","results"].forEach(s => $(s).classList.toggle('hide', s !== id)); }
+
+function pick(m){
+  modeName = m;
+  const idxs = Q.map((_,i)=>i).filter(i => m==='all' || WEEKGROUP[Q[i].c]===m);
+  totalQ = idxs.length;
+  pending = idxs.slice();
+  firstCorrect = 0; liveRight = 0; liveWrong = 0; roundNo = 1;
+  startRound(pending.slice());
+}
+
+function startRound(list){ queue = list; pos = 0; show('quiz'); showQ(); }
+
+function showQ(){
+  const qi = queue[pos], q = Q[qi];
+  answered = false;
+  const card = $('qcard');
+  card.classList.remove('out','shake');
+  card.style.animation='none'; void card.offsetWidth; card.style.animation='';
+  $('wk').textContent = WK[q.c];
+  $('chap').textContent = CH[q.c];
+  $('counter').textContent = roundNo===1 ? `سؤال ${pos+1} من ${queue.length}` : `مراجعة · جولة ${roundNo} · ${pos+1} من ${queue.length}`;
+  $('prog').style.width = (pos/queue.length*100) + '%';
+  $('liveScore').textContent = liveRight;
+  $('liveWrong').textContent = liveWrong;
+  $('ctx').innerHTML = q.ctx ? `<div class="ctx">${q.ctx}</div>` : '';
+  $('qtext').textContent = q.q;
+  $('feed').className = 'feed hide';
+  $('nextBtn').classList.add('hide');
+
+  const box = $('opts'); box.innerHTML = '';
+  q.o.forEach((txt,i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = `<span class="k">${LETTERS[i]}</span><span>${txt}</span>`;
+    b.onclick = () => choose(i);
+    box.appendChild(b);
+  });
+}
+
+function choose(i){
+  if(answered) return;
+  answered = true;
+  const qi = queue[pos], q = Q[qi];
+  const ok = i === q.a;
+  const btns = [...document.querySelectorAll('.opt')];
+  btns.forEach(b=>b.disabled=true);
+  btns[q.a].classList.add('right');
+  if(!ok) btns[i].classList.add('wrong');
+
+  if(ok){
+    liveRight++;
+    pending = pending.filter(x => x!==qi);
+    if(roundNo===1) firstCorrect++;
+  } else {
+    liveWrong++;
+    $('qcard').classList.add('shake');
+  }
+
+  const feed = $('feed');
+  feed.className = 'feed ' + (ok?'ok':'bad');
+  feed.innerHTML = `<h3>${ok ? 'إجابة صحيحة 🎉' : 'إجابة غلط 😅 الصح: '+q.o[q.a]}</h3><p>${q.e}</p>`;
+  $('liveScore').textContent = liveRight;
+  $('liveWrong').textContent = liveWrong;
+  $('nextBtn').textContent = pos===queue.length-1 ? 'شوف النتيجة 🏁' : 'السؤال الجاي ←';
+  $('nextBtn').classList.remove('hide');
+  $('prog').style.width = ((pos+1)/queue.length*100) + '%';
+}
+
+function next(){
+  if(!answered) return;
+  pos++;
+  if(pos < queue.length){
+    $('qcard').classList.add('out');
+    setTimeout(showQ, 280);
+  } else {
+    endRound();
+  }
+}
+
+function endRound(){
+  const solved = totalQ - pending.length;
+  const pct = Math.round(solved/totalQ*100);
+  show('results');
+  $('firstScore').textContent = `${firstCorrect} / ${totalQ}`;
+  $('finalScore').textContent = `${solved} / ${totalQ}`;
+  $('pctNum').textContent = pct + '%';
+  $('pctSub').textContent = pending.length ? `باقي ${pending.length}` : 'كله صح! ✨';
+
+  let msg, sub;
+  if(pending.length===0){ msg='عاش يا بطل! 🔥'; sub='حليت كل الأسئلة صح. انت جاهز.'; }
+  else if(pct>=90){ msg='ممتاز جداً 👏'; sub=`فاضل ${pending.length} سؤال بس، راجعهم وخلصهم.`; }
+  else if(pct>=70){ msg='شغل محترم 💪'; sub=`راجع الـ ${pending.length} اللي غلطت فيهم وهترتفع النتيجة.`; }
+  else if(pct>=50){ msg='كويس، ومحتاج شوية مراجعة'; sub=`راجع الـ ${pending.length} سؤال اللي غلطت فيهم.`; }
+  else { msg='محتاج مراجعة، بس ما تقلقش 🙂'; sub=`راجع الأسئلة اللي غلطت فيها وحاول تاني.`; }
+  $('msg').textContent = msg;
+  $('sub').textContent = sub;
+
+  const rb = $('retryBtn');
+  rb.style.display = pending.length ? '' : 'none';
+  rb.textContent = `راجع الأسئلة اللي غلطت فيها (${pending.length})`;
+
+  const fg = $('ringFg');
+  const C = 490;
+  fg.style.strokeDashoffset = C;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ fg.style.strokeDashoffset = C - C*pct/100; }));
+
+  if(pct>=60) confettiBurst();
+}
+
+function retry(){ roundNo++; startRound(pending.slice()); }
+
+function home(){
+  document.querySelectorAll('.confetti').forEach(n=>n.remove());
+  show('start');
+}
+
+function confettiBurst(){
+  const colors = ['#818cf8','#38bdf8','#22c55e','#f59e0b','#ef4444','#e879f9'];
+  for(let i=0;i<70;i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.background = colors[i%colors.length];
+    c.style.animationDuration = (2.5 + Math.random()*2.5) + 's';
+    c.style.animationDelay = (Math.random()*0.8) + 's';
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 6000);
+  }
+}
+
+document.addEventListener('keydown', e=>{
+  if(!$('quiz').classList.contains('hide')){
+    if(['1','2','3','4'].includes(e.key) && !answered){
+      const n = Number(e.key)-1;
+      const q = Q[queue[pos]];
+      if(n < q.o.length) choose(n);
+    }
+    if(e.key==='Enter' && answered) next();
+  }
+});
+</script>
+</body>
+</html>
